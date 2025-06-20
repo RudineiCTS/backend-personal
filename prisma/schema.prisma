@@ -8,40 +8,43 @@ datasource db {
 }
 
 model StudentGym {
-  id       Int      @id @default(autoincrement())
-  fullName String
-  email    String @unique
-  phone    String @unique
-  dateOfBirth DateTime
-  gender  String
-  goalToAchieve String
-  observation String?
-  studentGymActive Boolean @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               Int       @id @default(autoincrement())
+  fullName         String
+  email            String    @unique
+  phone            String    @unique
+  dateOfBirth      DateTime
+  gender           String
+  goalToAchieve    String
+  observation      String?
+  studentGymActive Boolean   @default(true)
+  workouts         Workout[] // <-- Relacionamento inverso
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }
 
 model Workout {
-  id          Int      @id @default(autoincrement())
-  nameWorkout String
-  description String?
-  dayOfWeek   Int
+  id           Int                 @id @default(autoincrement())
+  nameWorkout  String
+  description  String?
+  dayOfWeek    Int
   idStudentGym Int
-  studentGym StudentGym @relation(fields:[idStudentGym], references:[id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  studentGym   StudentGym          @relation(fields: [idStudentGym], references: [id])
+  exercises    ExerciseToWorkout[] // <-- Relacionamento com ExerciseToWorkout
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
 }
 
 model Exercise {
-  id          Int      @id @default(autoincrement())
+  id           Int                 @id @default(autoincrement())
   nameExercise String
-  description String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  tags        String[]
+  description  String
+  workouts     ExerciseToWorkout[] // <-- Relacionamento inverso
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  tags         String[]
 }
 
-model ExerciseToWorkout{
+model ExerciseToWorkout {
   id          Int      @id @default(autoincrement())
   idExercise  Int
   idWorkout   Int
@@ -49,8 +52,8 @@ model ExerciseToWorkout{
   repetitions Int?
   weight      Float?
   restTime    Int?
-  exercise    Exercise @relation(fields:[idExercise], references:[id])
-  workout     Workout @relation(fields:[idWorkout], references:[id])
+  exercise    Exercise @relation(fields: [idExercise], references: [id])
+  workout     Workout  @relation(fields: [idWorkout], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
